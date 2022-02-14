@@ -5,12 +5,9 @@ export const App = () => {
   // 追加ボタン
   const [todoText, setTodoText] = useState("");
   // 未完了のTODO
-  const [incompleteTodos, setIncompleteTodos] = useState([
-    "あああああ",
-    "いいいいい"
-  ]);
+  const [incompleteTodos, setIncompleteTodos] = useState([]);
   // 完了のTODO
-  const [completeTodos, setCompleteTodos] = useState(["ううううう"]);
+  const [completeTodos, setCompleteTodos] = useState([]);
 
   // todoTextの入力処理
   const onChangeTodoText = (event) => setTodoText(event.target.value);
@@ -33,6 +30,34 @@ export const App = () => {
     setIncompleteTodos(newTodos);
   };
 
+  // 完了ボタン
+  const onClickComplete = (index) => {
+    const newIncompleteTodos = [...incompleteTodos];
+    // 指定されたインデックスから指定個数を削除する関数
+    newIncompleteTodos.splice(index, 1);
+
+    const newCompleteTodos = [...completeTodos, incompleteTodos[index]];
+
+    // 未完了のTODO更新
+    setIncompleteTodos(newIncompleteTodos);
+    // 完了のTODO更新
+    setCompleteTodos(newCompleteTodos);
+  };
+
+  // 戻すボタン
+  const onClickBack = (index) => {
+    const newCompleteTodos = [...completeTodos];
+    // 指定されたインデックスから指定個数を削除する関数
+    newCompleteTodos.splice(index, 1);
+
+    const newIncompleteTodos = [...incompleteTodos, completeTodos[index]];
+
+    // 未完了のTODOを更新
+    setIncompleteTodos(newIncompleteTodos);
+    // 完了のTODOを更新
+    setCompleteTodos(newCompleteTodos);
+  };
+
   return (
     <>
       <div className="input-area">
@@ -50,7 +75,7 @@ export const App = () => {
             return (
               <div key={todo} className="list-row">
                 <li>{todo}</li>
-                <button>完了</button>
+                <button onClick={() => onClickComplete(index)}>完了</button>
                 <button onClick={() => onClickDelete(index)}>削除</button>
               </div>
             );
@@ -60,11 +85,11 @@ export const App = () => {
       <div className="complete-area">
         <p className="title">完了のTODO</p>
         <ul>
-          {completeTodos.map((todo) => {
+          {completeTodos.map((todo, index) => {
             return (
               <div key={todo} className="list-row">
                 <li>{todo}</li>
-                <button>戻す</button>
+                <button onClick={() => onClickBack(index)}>戻す</button>
               </div>
             );
           })}
